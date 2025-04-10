@@ -1,0 +1,135 @@
+.content {
+    display: flex;
+    justify-content: center;
+}
+
+.library-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 1080px;
+    width: 100%;
+}
+
+.library-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.add-button {
+    background-color: var(--add-button-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding:10px;
+    font-size: 1.8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.library-title {
+    font-size: 2.5rem;
+    font-weight: 500;
+    margin:0;
+}
+
+.books-gallery {
+    background-color: var(--primary-color);
+    padding: 20px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 300px);
+    gap: 25px;
+    box-shadow: var(--shadow);
+}
+
+.book-card {
+    background-color: var(--third-color);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: var(--shadow);
+}
+
+.book-card .book-image {
+    width: 100%;
+}
+
+.book-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.book-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-second-color);
+    line-height: 1.2;
+    text-align: justify;
+}
+
+.book-author {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text-info-color);
+    font-style: italic;
+}
+
+.book-pages {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-info-color);
+    font-weight: 400;
+}
+
+.book-actions {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+
+.book-actions button {
+    padding: 8px 16px; 
+    border: none; 
+    border-radius: 4px; 
+    font-size: 0.9rem; 
+    font-weight: 500; 
+    text-transform: uppercase; 
+    cursor: pointer; 
+    transition: all 0.2s ease; 
+    font-weight: 600;
+}
+
+.delete-book {
+    background-color: var(--delete-color);
+}
+
+.read-book {
+    background-color: var(--read-color);
+}
+
+.delete-book:hover {
+    background-color: var(--delete-darker-color);
+    color: white;
+}
+
+.read-book:hover {
+    background-color: var(--read-darker-color);
+}
+
+.add-button:hover {
+    background-color: var(--add-button-darker-color);
+}
+
+.books-gallery,
+.book-image,
+.library-section,
+.book-card {
+    border-radius: 5px;
+}
+

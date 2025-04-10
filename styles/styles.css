@@ -1,0 +1,50 @@
+:root {
+    --primary-color:#C4D9FF;
+    --second-color:#E8F9FF;
+    --third-color:#FFFFFF;
+    --text-second-color:#2c3e50;
+    --text-info-color:#555;
+    --delete-darker-color:#F7374F;
+    --delete-color:#FF8989;
+    --read-color:#F8ED8C;
+    --read-darker-color:#89AC46;
+    --add-button-color:#9ACBD0;
+    --add-button-darker-color:#006A71;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.container {
+    display: grid;
+    grid-template-areas: 
+        "header"
+        "content"
+        "content";
+    grid-template-columns: 1fr;
+    grid-template-rows: 80px repeat(2,1fr);
+    gap: 20px;
+}
+
+.header {
+    grid-area: header;
+}
+
+
+.content {
+    grid-area: content;
+}
+
