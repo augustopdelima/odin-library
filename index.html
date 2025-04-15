@@ -1,46 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Library</title>
-        <link rel="stylesheet" href="./styles/normalize.css">
-        <link rel="stylesheet" href="./styles/styles.css">
-        <link rel="stylesheet" href="./styles/header.css">
-        <link rel="stylesheet" href="./styles/content.css">
-    </head>
-    <body class="container">
-        <header class="header">
-            <img class="header-logo" src="./assets/icons/library.svg" alt="Library Logo"/>
-            <h1 class="header-title">Library</h1>
-        </header>
-        <main class="content">
-            <section class="library-section">
 
-                <div class="library-header">
-                    <h2 class="library-title">Your Library</h2>
-                    <button class="add-button">+ Add Book</button>
-                </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library</title>
+    <link rel="stylesheet" href="./styles/normalize.css">
+    <link rel="stylesheet" href="./styles/styles.css">
+    <link rel="stylesheet" href="./styles/header.css">
+    <link rel="stylesheet" href="./styles/content.css">
+    <link rel="stylesheet" href="./styles/switch.css">
+    <link rel="stylesheet" href="./styles/modal.css"> 
+</head>
 
-                <div class="books-gallery">
+<body class="container">
+    <header class="header">
+        <img class="header-logo" src="./assets/icons/library.svg" alt="Library Logo" />
+        <h1 class="header-title">Library</h1>
+    </header>
+    <main class="content">
+        <section class="library-section">
 
-                    <section class="book-card">
-                        <img class="book-image" src="https://m.media-amazon.com/images/I/81lQ5N0QwJL.jpg" alt="imagem do livro" />
+            <div class="library-header">
+                <h2 class="library-title">Your Library</h2>
+                <button id="add-book-btn" class="add-button">+ Add Book</button>
+            </div>
 
-                        <div class="book-info">
-                            <h3 class="book-title">Senhor dos Anéis: As duas Torres</h3>
-                            <p class="book-author ">Author: J.R.R Tolkien</p>
-                            <p class="book-pages">Pages: 457</p>
+            <div class="books-gallery" id="books-g">
+
+                <section class="book-card">
+                    <img class="book-image" src="https://m.media-amazon.com/images/I/81lQ5N0QwJL.jpg"
+                        alt="imagem do livro" />
+
+                    <div class="book-info">
+                        <h3 class="book-title">Senhor dos Anéis: As duas Torres</h3>
+                        <p class="book-author ">Author: J.R.R Tolkien</p>
+                        <p class="book-pages">Pages: 457</p>
+                    </div>
+
+                    <div class="book-actions">
+                        <button class="delete-book">DELETE</button>
+
+                        <div class="switch-wrapper">
+                            <span class="switch-label">Read</span>
+                            <input id="switch-input-card" type="checkbox">
+                            <label for="switch-input-card"></label>
                         </div>
+                    </div>
+                </section>
 
-                        <div class="book-actions">
-                            <button class="delete-book">DELETE</button>
-                            <button class="read-book">READ</button>
-                        </div>
-                    </section>
+            </div>
+        </section>
+    </main>
 
+    <dialog id="add-book-modal" class="modal">
+        <form class="modal-form">
+            <fieldset class="form-section">
+                <legend class="form-title">Book info</legend>
+
+                <label class="form-label" for="title">Title:</label>
+                <input class="form-input" type="text" id="title" name="title" />
+
+                <label class="form-label" for="author">Author:</label>
+                <input class="form-input" type="text" id="author" name="author" />
+
+                <label class="form-label" for="image">Image Url:</label>
+                <input class="form-input" type="url" id="image" name="image" />
+
+                <div class="switch-wrapper">
+                    <span class="switch-label form-label">Read:</span>
+                    <input id="switch-form-card" type="checkbox">
+                    <label for="switch-form-card"></label>
                 </div>
-            </section>
-        </main>
-    </body>
+            </fieldset>
+
+
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-submit">Add</button>
+                <button type="button" class="btn btn-cancel">Cancel</button>               
+            </div>
+
+        </form>
+
+    </dialog>
+
+
+    <script src="./src/library.js"></script>
+</body>
+
 </html>
