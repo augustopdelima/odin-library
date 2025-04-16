@@ -36,7 +36,84 @@ function Book(title, author, pages, image, read = false) {
     this.id = crypto.randomUUID();
 }
 
-function render(library = new Library()) {
+
+function createBookInfoElement(book) {
+
+    const { title, author, pages } = book;
+
+    const bookInfo = document.createElement('div');
+    bookInfo.className = 'book-info';
+
+    const bookTitle = document.createElement('h3');
+    bookTitle.className = 'book-title';
+    bookTitle.textContent = title;
+
+    const bookAuthor = document.createElement('p');
+    bookAuthor.className = 'book-author';
+    bookAuthor.textContent = `Author: ${author}`;
+
+    const bookPages = document.createElement('p');
+    bookPages.className = 'book-pages';
+    bookPages.textContent = `Pages: ${pages}`;
+
+    bookInfo.appendChild(bookTitle);
+    bookInfo.appendChild(bookAuthor);
+    bookInfo.appendChild(bookPages);
+
+    return bookInfo
+}
+
+function createBookActions(book) {
+
+    const { id } = book;
+
+    const bookActions = document.createElement('div');
+    bookActions.className = 'book-actions';
+
+    const deleteBook = document.createElement('button');
+    deleteBook.className = 'delete-book';
+    deleteBook.textContent = 'DELETE'
+    deleteBook.id = id;
+ 
+    const switchButton = createSwitchButton(book);
+
+    bookActions.appendChild(deleteBook);
+    bookActions.appendChild(switchButton);
+
+    return bookActions;
+}
+
+
+function createSwitchButton(book) {
+
+    const { read } = book;
+
+    const switchWrapper = document.createElement('div');
+    switchWrapper.className = 'switch-wrapper';
+
+    const labelText = document.createElement('span');
+    labelText.className = 'switch-label';
+    labelText.textContent = 'Read';
+
+    const checkboxId = crypto.randomUUID();
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = checkboxId;
+    checkbox.checked = read;
+
+    const label = document.createElement('label');
+    label.setAttribute('for', checkbox);
+
+    switchWrapper.appendChild(labelText);
+    switchWrapper.appendChild(checkbox);
+    switchWrapper.appendChild(label);
+
+    return switchWrapper;
+}
+
+
+function renderBooks(library = new Library()) {
     const booksGallery = document.getElementById('books-g');
 
     const elements = library.books.map((book) => {
@@ -47,55 +124,10 @@ function render(library = new Library()) {
         bookImage.src = book.image;
         bookImage.className = 'book-image';
 
-        const bookInfo = document.createElement('div');
-        bookInfo.className = 'book-info';
+        const bookInfo = createBookInfoElement(book);
 
-        const bookTitle = document.createElement('h3');
-        bookTitle.className = 'book-title';
-        bookTitle.textContent = book.title;
+        const bookActions = createBookActions(book);
 
-        const bookAuthor = document.createElement('p');
-        bookAuthor.className = 'book-author';
-        bookAuthor.textContent = `Author: ${book.author}`;
-
-        const bookPages = document.createElement('p');
-        bookPages.className = 'book-pages';
-        bookPages.textContent = `Pages: ${book.pages}`;
-
-        bookInfo.appendChild(bookTitle);
-        bookInfo.appendChild(bookAuthor);
-        bookInfo.appendChild(bookPages);
-
-        const bookActions = document.createElement('div');
-        bookActions.className = 'book-actions';
-
-        const deleteBook = document.createElement('button');
-        deleteBook.className = 'delete-book';
-        deleteBook.textContent = 'DELETE'
-        deleteBook.id = book.id;
-
-
-        const switchWrapper = document.createElement('div');
-        switchWrapper.className = 'switch-wrapper';
-
-        const labelText = document.createElement('span');
-        labelText.className = 'switch-label';
-        labelText.textContent = 'Read';
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = 'switch-input-card';
-        checkbox.checked = true;
-
-        const label = document.createElement('label');
-        label.setAttribute('for', 'switch-input-card');
-
-        switchWrapper.appendChild(labelText);
-        switchWrapper.appendChild(checkbox);
-        switchWrapper.appendChild(label);
-
-        bookActions.appendChild(deleteBook);
-        bookActions.appendChild(switchWrapper);
 
         bookCard.appendChild(bookImage);
         bookCard.appendChild(bookInfo);
@@ -105,7 +137,7 @@ function render(library = new Library()) {
     });
 
 
-    elements.forEach((element)=> {
+    elements.forEach((element) => {
         booksGallery.appendChild(element);
     });
 
@@ -113,4 +145,4 @@ function render(library = new Library()) {
 
 const library = new Library();
 
-render();
+renderBooks(library);
