@@ -1,10 +1,3 @@
-const addBookButton = document.getElementById('add-book-btn');
-const addBookModal = document.getElementById('add-book-modal');
-
-addBookButton.addEventListener('click', () => {
-    addBookModal.showModal();
-});
-
 
 function Library() {
     this.books = [{
@@ -16,8 +9,7 @@ function Library() {
         id: crypto.randomUUID,
     }];
 
-    this.addBook = function (title, author, pages, image, read = false) {
-        const book = new Book(title, author, pages, image, read);
+    this.addBook = function (book) {
         this.books.push(book);
     }
 
@@ -74,7 +66,7 @@ function createBookActions(book) {
     deleteBook.className = 'delete-book';
     deleteBook.textContent = 'DELETE'
     deleteBook.id = id;
- 
+
     const switchButton = createSwitchButton(book);
 
     bookActions.appendChild(deleteBook);
@@ -113,27 +105,34 @@ function createSwitchButton(book) {
 }
 
 
+function createBookCard(book) {
+    const bookCard = document.createElement('section');
+
+    bookCard.className = 'book-card';
+
+    const bookImage = document.createElement('img');
+    bookImage.src = book.image;
+    bookImage.className = 'book-image';
+
+    const bookInfo = createBookInfoElement(book);
+
+    const bookActions = createBookActions(book);
+
+
+    bookCard.appendChild(bookImage);
+    bookCard.appendChild(bookInfo);
+    bookCard.appendChild(bookActions);
+
+    return bookCard;
+}
+
 function renderBooks(library = new Library()) {
+
     const booksGallery = document.getElementById('books-g');
 
+
     const elements = library.books.map((book) => {
-        const bookCard = document.createElement('section');
-        bookCard.className = 'book-card';
-
-        const bookImage = document.createElement('img');
-        bookImage.src = book.image;
-        bookImage.className = 'book-image';
-
-        const bookInfo = createBookInfoElement(book);
-
-        const bookActions = createBookActions(book);
-
-
-        bookCard.appendChild(bookImage);
-        bookCard.appendChild(bookInfo);
-        bookCard.appendChild(bookActions);
-
-        return bookCard;
+        return createBookCard(book);
     });
 
 
@@ -143,6 +142,59 @@ function renderBooks(library = new Library()) {
 
 }
 
+function addBookElementToDom(book) {
+    const booksGallery = document.getElementById('books-g');
+
+    const bookCard = createBookCard(book);
+
+    booksGallery.appendChild(bookCard);
+}
+
+function addBookToLibrary(bookData, library) {
+    const { title, author, pages, image } = bookData;
+
+    const bookWasRead = !!bookData.read;
+
+    const book = new Book(title, author, pages, image, bookWasRead);
+    
+    library.addBook(book);
+    addBookElementToDom(book);
+}
+
+const addBookButton = document.getElementById('add-book-btn');
+const addBookModal = document.getElementById('add-book-modal');
+const cancelFormButton = document.getElementById('cancel-form-button');
+const formAddBook = document.getElementById('create-book-form');
+
 const library = new Library();
+
+function closeForm(formElement) {
+    addBookModal.close();
+    formElement.reset();
+}
+
+addBookButton.addEventListener('click', () => {
+    addBookModal.showModal();
+});
+
+cancelFormButton.addEventListener('click',() => {
+   
+    closeForm(formAddBook);
+});
+
+formAddBook.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const formEvent = event.target;
+    const formData = new FormData(formEvent);
+
+    const bookData = Object.fromEntries(formData.entries());
+
+    addBookToLibrary(bookData, library);
+
+    closeForm(formAddBook);
+});
+
+
 
 renderBooks(library);

@@ -114,10 +114,6 @@
 }
 
 
-
-
-
-
 .delete-book:hover {
     background-color: var(--delete-darker-color);
     color: white;
