@@ -38,18 +38,21 @@
                 <legend class="form-title">Book info</legend>
 
                 <label class="form-label" for="title">Title:</label>
-                <input class="form-input" type="text" id="title" name="title" />
+                <input class="form-input" required type="text" id="title" name="title" />
 
                 <label class="form-label" for="author">Author:</label>
-                <input class="form-input" type="text" id="author" name="author" />
+                <input class="form-input" required type="text" id="author" name="author" />
 
                 <label class="form-label" for="image">Image Url:</label>
-                <input class="form-input" type="url" id="image" name="image" />
+                <input class="form-input" required type="url" id="image" name="image" />
 
-                <div class="switch-wrapper">
-                    <span class="switch-label form-label">Read:</span>
-                    <input id="switch-form-card" type="checkbox" name="read">
-                    <label for="switch-form-card"></label>
+
+                <label class="form-label">Was the book read?:</label>
+                <div class="radio-buttons"> 
+                    <label for="yes">Yes:</label>
+                    <input type="radio" name="read" class="radio-button" id="yes" value="yes" />
+                    <label for="no">No:</label>
+                    <input type="radio" name="read" class="radio-button" id="no" value="no"/>
                 </div>
             </fieldset>
 

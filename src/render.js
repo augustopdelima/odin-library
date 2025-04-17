@@ -1,4 +1,4 @@
-import createBookCard from "./bookComponents.js";
+import { createBookCard } from "./bookComponents.js";
 
 function renderBooks(library = new Library()) {
 
@@ -30,4 +30,8 @@ function removeBookFromDom(book) {
     booksGallery.removeChild(book);
 }
 
-export { addBookElementToDom, renderBooks, removeBookFromDom }
+function updateSwitch(target ,updateBookData) {
+    target.checked = updateBookData.read;
+}
+
+export { addBookElementToDom, renderBooks, removeBookFromDom, updateSwitch }

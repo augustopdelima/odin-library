@@ -26,15 +26,12 @@ function createBookInfoElement(book) {
 
 function createBookActions(book) {
 
-    const { id } = book;
-
     const bookActions = document.createElement('div');
     bookActions.className = 'book-actions';
 
     const deleteBook = document.createElement('button');
     deleteBook.className = 'delete-book';
     deleteBook.textContent = 'DELETE'
-    deleteBook.id = id;
 
     const switchButton = createSwitchButton(book);
 
@@ -54,7 +51,7 @@ function createSwitchButton(book) {
 
     const labelText = document.createElement('span');
     labelText.className = 'switch-label';
-    labelText.textContent = 'Read';
+    labelText.textContent = read ? 'Read' : 'Not Read';
 
     const checkboxId = crypto.randomUUID();
 
@@ -64,6 +61,7 @@ function createSwitchButton(book) {
     checkbox.checked = read;
 
     const label = document.createElement('label');
+    label.setAttribute('checkbox-label-read-book', read);
     label.setAttribute('for', checkbox);
 
     switchWrapper.appendChild(labelText);
@@ -75,9 +73,13 @@ function createSwitchButton(book) {
 
 
 function createBookCard(book) {
+
+    const { id } = book;
+
     const bookCard = document.createElement('section');
 
     bookCard.className = 'book-card';
+    bookCard.id = id;
 
     const bookImage = document.createElement('img');
     bookImage.src = book.image;
@@ -95,4 +97,4 @@ function createBookCard(book) {
     return bookCard;
 }
 
-export default createBookCard;
+export { createBookCard, createSwitchButton, createBookActions, createBookInfoElement };

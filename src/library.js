@@ -17,6 +17,23 @@ function Library() {
        
         this.books = newBooks;
     }
+
+    this.updateBookStatus = function (bookId) {
+        const newBooks = this.books.map((book) => {
+          if(book.id === bookId) {
+            book.read = !book.read;
+          }
+
+          return book
+        })
+
+        this.books = newBooks;
+    }
+
+    this.getBook = function(bookId) {
+        const book = this.books.find((book) => book.id === bookId);
+        return book;
+    }
 }
 
 export default Library;
