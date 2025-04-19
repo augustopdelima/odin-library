@@ -31,7 +31,8 @@ function createBookActions(book) {
 
     const deleteBook = document.createElement('button');
     deleteBook.className = 'delete-book';
-    deleteBook.textContent = 'DELETE'
+    deleteBook.textContent = 'DELETE';
+    deleteBook.setAttribute('data-command', 'delete-book');
 
     const switchButton = createSwitchButton(book);
 
@@ -61,8 +62,8 @@ function createSwitchButton(book) {
     checkbox.checked = read;
 
     const label = document.createElement('label');
-    label.setAttribute('checkbox-label-read-book', read);
     label.setAttribute('for', checkbox);
+    label.setAttribute('data-command', 'toggle-read-status');
 
     switchWrapper.appendChild(labelText);
     switchWrapper.appendChild(checkbox);

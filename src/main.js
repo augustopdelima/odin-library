@@ -1,109 +1,118 @@
-import Library from "./library.js";
-import Book from "./book.js";
-import { renderBooks, addBookElementToDom, removeBookFromDom, updateSwitch } from "./render.js";
+import { Book, Library } from "./library.js";
+import presentation from "./presentation.js";
+import createDocumentListener from "./handleInput.js";
 
-function addBookToLibrary(bookData, library) {
-    const { title, author, pages, image } = bookData;
+function LibraryApp() {
 
-    const bookWasRead = bookData.read === "yes";
+    const library = new Library();
 
-    const book = new Book(title, author, pages, image, bookWasRead);
+    const documentListener = createDocumentListener();
+    documentListener.subscribe(handleCommand)
 
-    library.addBook(book);
-    addBookElementToDom(book);
-}
+    const { addBookElementToDom, removeBookFromDom, renderBooks, updateSwitch } = presentation();
 
-function deleteBook(target) {
-    let parent = target.parentElement;
-    while (!parent.classList.contains('book-card')) {
-        parent = parent.parentElement;
+    function init() {
+        renderBooks(library);
     }
 
-    const bookId = parent.getAttribute('id');
-
-    library.removeBook(bookId);
-
-
-
-    removeBookFromDom(parent);
-}
-
-function updateStatus(target) {
-    let parent = target.parentElement;
-    while(!parent.classList.contains('book-card')) {
-        parent = parent.parentElement;
-    } 
-
-    const bookId = parent.getAttribute('id');
-
-    library.updateBookStatus(bookId);
-    const bookUpdated = library.getBook(bookId);
-
-    const checkbox = target.previousElementSibling;
-
-    if(checkbox && checkbox.type === 'checkbox') {
-        updateSwitch(checkbox,bookUpdated)
+    function openForm(command) {
+        const form = document.getElementById('add-book-modal');
+        form.showModal();
     }
+
+    function closeForm(command) {
+        const { target } = command;
+        const addBookModal = target.closest('dialog');
+        const formElement = target.closest('form');
+        addBookModal.close();
+        formElement.reset();
+    }
+
+    function handleFormSubmit(command) {
+        const { target } = command;
+        const formData = new FormData(target);
+
+        const bookData = Object.fromEntries(formData.entries());
+
+        addBookToLibrary(bookData, library);
+        closeForm(command);
+    }
+
+    function handleDeleteBook(command) {
+        const { target } = command;
+
+        let parent = target.parentElement;
+        while (!parent.classList.contains('book-card')) {
+            parent = parent.parentElement;
+        }
+
+        const bookId = parent.getAttribute('id');
+
+        library.removeBook(bookId);
+
+        removeBookFromDom(parent);
+    }
+
+    function handleStatusBook(command) {
+        const { target } = command;
+
+        let parent = target.parentElement;
+        while (!parent.classList.contains('book-card')) {
+            parent = parent.parentElement;
+        }
+
+        const bookId = parent.getAttribute('id');
+
+        library.updateBookStatus(bookId);
+        const bookUpdated = library.getBook(bookId);
+
+        const checkbox = target.previousElementSibling;
+
+        if (checkbox && checkbox.type === 'checkbox') {
+            updateSwitch(checkbox, bookUpdated)
+        }
+
+        const labelText = checkbox.previousElementSibling;
+
+        if (labelText && labelText.classList.contains('switch-label')) {
+            labelText.textContent = bookUpdated.read ? 'Read' : 'Not Read'
+        }
+    }
+
+    function addBookToLibrary(bookData, library) {
+        const { title, author, pages, image } = bookData;
+
+        const bookWasRead = bookData.read === "yes";
+
+        const book = new Book(title, author, pages, image, bookWasRead);
+
+        library.addBook(book);
+        addBookElementToDom(book);
+    }
+
+    function handleCommand(command) {
+        const { identifier } = command;
     
-    const labelText = checkbox.previousElementSibling;
+        const validEventsTarget = {
+            'add-book-btn': openForm,
+            'cancel-form-button': closeForm,
+            'create-book-form': handleFormSubmit,
+            'delete-book': handleDeleteBook,
+            'toggle-read-status':handleStatusBook,
+        }
 
-    if(labelText && labelText.classList.contains('switch-label')) {
-        labelText.textContent = bookUpdated.read ? 'Read' : 'Not Read'
+        const handleFunction = validEventsTarget[identifier];
+
+        if (!handleFunction) return;
+
+        handleFunction(command);
     }
+
+    return { init }
 }
 
 
-const addBookButton = document.getElementById('add-book-btn');
-const addBookModal = document.getElementById('add-book-modal');
-const cancelFormButton = document.getElementById('cancel-form-button');
-const formAddBook = document.getElementById('create-book-form');
-const booksGallery = document.getElementById('books-g');
-
-const library = new Library();
-
-function closeForm(formElement) {
-    addBookModal.close();
-    formElement.reset();
-}
-
-addBookButton.addEventListener('click', () => {
-    addBookModal.showModal();
-});
-
-cancelFormButton.addEventListener('click', () => {
-    closeForm(formAddBook);
-});
-
-formAddBook.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    const formEvent = event.target;
-    const formData = new FormData(formEvent);
-
-    const bookData = Object.fromEntries(formData.entries());
-
-    addBookToLibrary(bookData, library);
-
-    closeForm(formAddBook);
-});
+const libraryApp = LibraryApp();
+libraryApp.init();
 
 
-booksGallery.addEventListener('click', (event) => {
-    const { target } = event;
-
-    if (!(target instanceof HTMLElement)) return;
-
-    if (target.classList.contains('delete-book')) {
-        deleteBook(target);
-    }
-
-
-    if (!!target.getAttribute('checkbox-label-read-book')) {
-        updateStatus(target);
-    }
-
-
-});
-
-
-renderBooks(library);
