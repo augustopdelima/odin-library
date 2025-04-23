@@ -4,12 +4,9 @@ export default function createDb(Library) {
 
 
     function saveBooks() {
-
-        const books = JSON.parse(libraryBooks).map(book => 
-            new Book(book.title, book.author, book.pages, book.image, book.read)
-        );
-
-        Library.setBooks(books); 
+        const books = Library.getBooks();
+        const jsonBooks = JSON.stringify(books)
+        localStorage.setItem('library', jsonBooks);
     }
 
     function loadBooks() {
@@ -18,7 +15,10 @@ export default function createDb(Library) {
 
         if(!libraryBooks) return;
 
-        const books = JSON.parse(libraryBooks);
+        const books = JSON.parse(libraryBooks).map(book => 
+            new Book(book.title, book.author, book.pages, book.image, book.read)
+        );
+
 
         Library.setBooks(books);
 
@@ -32,21 +32,21 @@ export default function createDb(Library) {
         const newBook = new Book(title, author, pages, image, read);
 
         Library.addBook(newBook);
-        saveBooks();
+        saveBooks(Library);
     }
 
     function handleRemoveBook (command) {
         const { bookId } = command;
 
         Library.removeBook(bookId);
-        saveBooks();
+        saveBooks(Library);
     }
 
     function handleStatusBook (command) {
         const { bookId } = command;
 
         Library.updateBookStatus(bookId);
-        saveBooks();
+        saveBooks(Library);
     }
 
     function handleCommand (command) {

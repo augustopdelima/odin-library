@@ -55,7 +55,7 @@ function createApp() {
 
         notifyAll(newCommand);
 
-        formElement.reset();
+        if(formElement) formElement.reset();
     }
 
     function handleFormSubmit(command) {
@@ -80,7 +80,8 @@ function createApp() {
 
     function getBookElement(child) {
         let parent = child.parentElement;
-        while (!parent.classList.contains('book-card')) {
+        
+        while (parent && !parent.classList.contains('book-card')) {
             parent = parent.parentElement;
         }
 
@@ -119,8 +120,9 @@ function createApp() {
 
         notifyAll(updateLibraryCommand);
 
-        const checkbox = target.previousElementSibling;
-        const label = checkbox.previousElementSibling;
+        const switchWrapper = target.closest('.switch-wrapper');
+        const checkbox = switchWrapper.querySelector('input[type="checkbox"]');
+        const label = switchWrapper.querySelector('.switch-label');
 
         const updateDomCommand = {
             identifier:'update-switch',
