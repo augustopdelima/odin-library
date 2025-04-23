@@ -14,25 +14,33 @@ function Library() {
 
     this.removeBook = function (bookId) {
         const newBooks = this.books.filter((book) => book.id !== bookId);
-       
+
         this.books = newBooks;
     }
 
     this.updateBookStatus = function (bookId) {
         const newBooks = this.books.map((book) => {
-          if(book.id === bookId) {
-            book.read = !book.read;
-          }
+            if (book.id === bookId) {
+                book.read = !book.read;
+            }
 
-          return book
+            return book
         })
 
         this.books = newBooks;
     }
 
-    this.getBook = function(bookId) {
+    this.getBook = function (bookId) {
         const book = this.books.find((book) => book.id === bookId);
         return book;
+    }
+
+    this.getBooks = function () {
+        return this.books;
+    }
+
+    this.setBooks = function(books) {
+        this.books = books;
     }
 }
 

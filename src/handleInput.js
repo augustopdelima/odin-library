@@ -10,6 +10,12 @@ function createDocumentListener() {
         state.observers.push(observerFunction);
     }
 
+    function notifyAll(command) {
+        for (const observersFunction of state.observers) {
+            observersFunction(command);
+        }
+    }
+
     document.addEventListener('click', handleEvent);
     document.addEventListener('submit', handleSubmit);
 
@@ -51,11 +57,7 @@ function createDocumentListener() {
         handleEvent(event);
     }
 
-    function notifyAll(command) {
-        for (const observersFunction of state.observers) {
-            observersFunction(command);
-        }
-    }
+   
 
     return { subscribe }
 }

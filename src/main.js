@@ -1,30 +1,60 @@
-import { Book, Library } from "./library.js";
-import presentation from "./presentation.js";
+import { Library } from "./library.js";
+import createPresentation from "./presentation.js";
+import createDb from "./db.js";
 import createDocumentListener from "./handleInput.js";
 
-function LibraryApp() {
+function createApp() {
 
-    const library = new Library();
+    const state = {
+        observers:[],
+    }
 
-    const documentListener = createDocumentListener();
-    documentListener.subscribe(handleCommand)
+    function subscribe(observerFunction) {
+        state.observers.push(observerFunction);
+    }
+ 
 
-    const { addBookElementToDom, removeBookFromDom, renderBooks, updateSwitch } = presentation();
+    function notifyAll(command) {
+        for (const observersFunction of state.observers) {
+            observersFunction(command);
+        }
+    }
 
     function init() {
-        renderBooks(library);
+
+        const command = {
+            identifier:'render-books',
+            target: document.getElementById('books-g'),
+        }
+
+        notifyAll(command);
     }
 
     function openForm(command) {
-        const form = document.getElementById('add-book-modal');
-        form.showModal();
+
+        const newCommand = {
+            identifier:'open-form',
+            target: document.getElementById('add-book-modal'),
+            origin:command.target,
+        }
+
+        notifyAll(newCommand);
+
     }
 
     function closeForm(command) {
-        const { target } = command;
-        const addBookModal = target.closest('dialog');
-        const formElement = target.closest('form');
-        addBookModal.close();
+
+        const bookModal = document.getElementById('add-book-modal');
+        const formElement = document.getElementById('create-book-form');
+
+        const newCommand = {
+            identifier:'close-form',
+            target:bookModal,
+            origin:command,
+        }
+
+        notifyAll(newCommand);
+
         formElement.reset();
     }
 
@@ -34,61 +64,74 @@ function LibraryApp() {
 
         const bookData = Object.fromEntries(formData.entries());
 
-        addBookToLibrary(bookData, library);
+
+        const newCommand = {
+            identifier:'add-book',
+            bookData,
+            parent: document.getElementById('books-g'),
+            origin:command
+        }
+
+        notifyAll(newCommand);
+
+
         closeForm(command);
+    }
+
+    function getBookElement(child) {
+        let parent = child.parentElement;
+        while (!parent.classList.contains('book-card')) {
+            parent = parent.parentElement;
+        }
+
+        return parent;
     }
 
     function handleDeleteBook(command) {
         const { target } = command;
 
-        let parent = target.parentElement;
-        while (!parent.classList.contains('book-card')) {
-            parent = parent.parentElement;
+        const bookElement = getBookElement(target);
+        const bookId = bookElement.getAttribute('id');
+
+        const newCommand = {
+            identifier:'remove-book',
+            bookId,
+            parent: document.getElementById('books-g'),
+            bookElement,
+            origin:command,
         }
 
-        const bookId = parent.getAttribute('id');
-
-        library.removeBook(bookId);
-
-        removeBookFromDom(parent);
+        notifyAll(newCommand);
     }
 
     function handleStatusBook(command) {
         const { target } = command;
 
-        let parent = target.parentElement;
-        while (!parent.classList.contains('book-card')) {
-            parent = parent.parentElement;
+        const bookElement = getBookElement(target);
+        const bookId = bookElement.getAttribute('id');
+
+        
+        const updateLibraryCommand = {
+            identifier:'update-status-book',
+            bookId,
+            origin: command,
         }
 
-        const bookId = parent.getAttribute('id');
-
-        library.updateBookStatus(bookId);
-        const bookUpdated = library.getBook(bookId);
+        notifyAll(updateLibraryCommand);
 
         const checkbox = target.previousElementSibling;
+        const label = checkbox.previousElementSibling;
 
-        if (checkbox && checkbox.type === 'checkbox') {
-            updateSwitch(checkbox, bookUpdated)
+        const updateDomCommand = {
+            identifier:'update-switch',
+            checkbox,
+            label,
+            origin:command,
         }
 
-        const labelText = checkbox.previousElementSibling;
-
-        if (labelText && labelText.classList.contains('switch-label')) {
-            labelText.textContent = bookUpdated.read ? 'Read' : 'Not Read'
-        }
+        notifyAll(updateDomCommand);
     }
 
-    function addBookToLibrary(bookData, library) {
-        const { title, author, pages, image } = bookData;
-
-        const bookWasRead = bookData.read === "yes";
-
-        const book = new Book(title, author, pages, image, bookWasRead);
-
-        library.addBook(book);
-        addBookElementToDom(book);
-    }
 
     function handleCommand(command) {
         const { identifier } = command;
@@ -108,11 +151,20 @@ function LibraryApp() {
         handleFunction(command);
     }
 
-    return { init }
+    return { init, subscribe, handleCommand }
 }
 
+const library = new Library();
 
-const libraryApp = LibraryApp();
-libraryApp.init();
+const presentationLayer = createPresentation(library);
+const dbLayer = createDb(library);
+dbLayer.loadBooks();
 
+const app = createApp();
 
+const documentListener = createDocumentListener();
+documentListener.subscribe(app.handleCommand)
+
+app.subscribe(presentationLayer.handleCommand);
+app.subscribe(dbLayer.handleCommand);
+app.init();
