@@ -1,10 +1,11 @@
-import { Book } from "./library.js";
+import { Book, Library } from "./library.js";
 
-export default function createDb(Library) {
+
+export default function createDb(library) {
 
 
     function saveBooks() {
-        const books = Library.getBooks();
+        const books = library.getBooks;
         const jsonBooks = JSON.stringify(books)
         localStorage.setItem('library', jsonBooks);
     }
@@ -20,8 +21,7 @@ export default function createDb(Library) {
         );
 
 
-        Library.setBooks(books);
-
+        library.setBooks = books;
     }
 
     function handleAddBook (command) {
@@ -31,22 +31,21 @@ export default function createDb(Library) {
 
         const newBook = new Book(title, author, pages, image, read);
 
-        Library.addBook(newBook);
-        saveBooks(Library);
+        library.addBook(newBook);
     }
 
     function handleRemoveBook (command) {
         const { bookId } = command;
 
-        Library.removeBook(bookId);
-        saveBooks(Library);
+        library.removeBook(bookId);
+        saveBooks(library);
     }
 
     function handleStatusBook (command) {
         const { bookId } = command;
 
-        Library.updateBookStatus(bookId);
-        saveBooks(Library);
+        library.updateBookStatus(bookId);
+        saveBooks(library);
     }
 
     function handleCommand (command) {
